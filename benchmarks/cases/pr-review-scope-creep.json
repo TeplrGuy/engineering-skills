@@ -1,0 +1,12 @@
+{
+  "id": "pr-review-scope-creep",
+  "skill": "pr-review",
+  "description": "PR includes unrelated file changes and missing evidence",
+  "expected": {
+    "must_include": [
+      "blocker for unrelated scope",
+      "evidence gap callout",
+      "actionable remediation steps"
+    ]
+  }
+}

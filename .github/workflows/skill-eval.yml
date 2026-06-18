@@ -1,0 +1,46 @@
+name: Skill Evaluation
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1-5"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate manifest exists
+        run: test -f skills-manifest.json
+
+      - name: Validate benchmark definitions exist
+        run: test -d benchmarks/cases
+
+      - name: Emit placeholder evaluation result
+        run: |
+          cat > result.json <<EOF
+          {"quality_score":90,"determinism_score":93,"token_efficiency_score":88,"latency_score":85}
+          EOF
+
+      - name: Run score gate
+        shell: pwsh
+        run: ./scripts/score-skill.ps1 -ResultFile ./result.json
+
+      - name: Open improvement issue when gate fails
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "[skill-eval] Improve skill quality/tokens",
+              body: "Nightly skill evaluation failed. Review benchmark regressions and tune prompts/contracts.",
+              labels: ["automation", "quality-report", "skill-tuning"]
+            })

@@ -1,0 +1,12 @@
+{
+  "id": "issue-triage-cross-repo",
+  "skill": "issue-triage",
+  "description": "Portal issue requiring orders-service and shared-contracts changes",
+  "expected": {
+    "must_include": [
+      "child issue for each impacted repository",
+      "binary acceptance criteria",
+      "risk classification"
+    ]
+  }
+}
