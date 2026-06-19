@@ -23,6 +23,10 @@ Versioned, deterministic skills for consistent delivery across repositories.
 3. Validation gates reject outputs that violate schema or required sections.
 4. Nightly eval opens improvement issues when quality/tokens regress.
 
+## Cloud-agent rollout validation
+
+Docs-only README updates may be used to validate the cloud-agent flow end to end, including issue pickup, PR creation, and actionable PR review feedback, without introducing production risk.
+
 ## Promotion channels
 
 - `draft`: in development, never used in production repos.
