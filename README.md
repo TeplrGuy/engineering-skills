@@ -18,10 +18,14 @@ Versioned, deterministic skills for consistent delivery across repositories.
 
 ## Runtime model
 
-1. Each consumer repo pins a platform version in `.github/skills/skills.lock.json`.
-2. A sync workflow copies pinned skills directly into `.github/skills/<skill>/v1/SKILL.md`.
-3. Validation gates reject outputs that violate schema or required sections.
-4. Nightly eval opens improvement issues when quality/tokens regress.
+1. Each consumer repo records a version in `.github/skills/skills.lock.json`.
+2. The current sync workflow copies skills from the central repository's
+   `main` branch into `.github/skills/<skill>/v1/SKILL.md`; it does not enforce
+   the recorded version or an immutable commit.
+3. The consumer validation workflow checks for selected contract files; it does
+   not currently validate agent output against the schema.
+4. The evaluation workflow currently uses placeholder scores, so it does not
+   measure actual skill quality, token usage, or regression.
 
 ## Promotion channels
 
