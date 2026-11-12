@@ -35,18 +35,45 @@ Versioned, deterministic skills for consistent delivery across repositories.
 
 Only `stable` versions may be synced by production repositories.
 
-## Draft Copilot-native testing assets
+## Shared standards and native Copilot context
 
-`draft-skills/acceptance-test-generation/SKILL.md` and
-`draft-skills/playwright-journey-testing/SKILL.md` use Copilot's native skill format.
-`templates/test-engineer.agent.md` is a reusable custom-agent profile. These
-assets are draft until reviewed and promoted; the demo repositories carry
-copies for evaluation. Draft skills are outside the sync job's `skills/`
-source to prevent automatic rollout. The existing sync job reads `main`, not a pinned commit,
-so do not treat its lock file as a verified immutable pin or use it for
-production promotion.
+`standards/company.instructions.md` is the canonical shared engineering baseline.
+Consumers carry its exact contents in
+`.github/instructions/company-standards.instructions.md` with `applyTo: "**"`;
+their repository-wide Copilot instructions explicitly reference it as well.
+`.github/standards.lock.json` pins the source commit and SHA-256. The `Shared
+standards / standards` workflow checks the copy against that pinned revision.
+Require this check through repository rules after reviewing the rollout; merely
+adding a workflow does not make it a required merge check.
 
-For manual evaluation, copy each skill directory to `.github/skills/` and the
-agent profile to `.github/agents/test-engineer.agent.md` in the target
-repository. GitHub cloud agent availability depends on the assets being on the
-repository's default branch; draft PR contents alone do not enable them.
+For an initial rollout, commit the source and checker, then run:
+
+```text
+node scripts/standards.js sync <consumer-checkout> <canonical-checkout>
+node scripts/standards.js verify <consumer-checkout> <canonical-checkout>
+```
+
+Submit consumer changes through PRs. Pinning prevents silent changes from mutable
+`main`; future policy updates need an explicit reviewed lock and workflow update.
+Existing repository-specific guidance remains applicable. Do not copy deployment
+secrets or incident/customer data into these files.
+
+### Space and Memory
+
+Create a private **Agentic SDLC standards** Copilot Space under the intended owner.
+Attach this canonical file, architecture/runbooks, shared contracts and
+`TeplrGuy/portal-web#2`; attach the Space to the relevant planning conversation.
+Use repository instructions for coding sessions rather than assuming a Space is
+automatically loaded. Keep source-linked files authoritative; uploaded snapshots
+can become stale. Sharing a Space must not inadvertently broaden source access.
+
+Copilot Memory complements instructions with cited, revalidated repository facts
+and user preferences. It is not a shared policy store, approval record or substitute
+for review. Enable it only within the intended account/repository scope, inspect
+stored facts and their citations, and remove stale or sensitive facts.
+
+`TeplrGuy` is a personal account. A customer's organization can additionally use
+**Organization settings > Copilot > Custom instructions** for shared policy on
+supported surfaces; organization instructions do not cover every local client.
+Rulesets, required CI, CODEOWNERS review and protected environments enforce gates.
+Spaces and Memory alone do not.
